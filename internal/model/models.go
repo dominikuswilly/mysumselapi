@@ -32,3 +32,19 @@ type CityResponse struct {
 	} `json:"meta"`
 	Data []City `json:"data"`
 }
+
+// Category represents a destination category
+type Category struct {
+	ID   string `json:"id"`
+	Slug string `json:"slug"`
+	Name string `json:"name"`
+}
+
+// Destination represents a tourist destination
+type Destination struct {
+	ID         string     `json:"id"`
+	Name       string     `json:"name"`
+	Location   string     `json:"location"`
+	Categories []Category `json:"categories"`
+	ImageURL   string     `json:"image_url"`
+}

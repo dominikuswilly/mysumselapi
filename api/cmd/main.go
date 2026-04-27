@@ -15,10 +15,12 @@ func main() {
 	// Initialize Repositories
 	msgRepo := repository.NewMessageRepository()
 	cityRepo := repository.NewCityRepository()
+	destRepo := repository.NewDestinationRepository()
 
 	// Initialize Services
 	msgService := service.NewMessageService(msgRepo)
 	cityService := service.NewCityService(cityRepo)
+	destService := service.NewDestinationService(destRepo)
 
 	// Initialize Router
 	mux := http.NewServeMux()
@@ -66,6 +68,25 @@ func main() {
 			Status:  "success",
 			Message: "Cities retrieved successfully",
 			Data:    cities,
+			Time:    time.Now(),
+		})
+	})
+
+	// Favorite Destinations Endpoint
+	mux.HandleFunc("GET /api/v1/destinations/favorites", func(w http.ResponseWriter, r *http.Request) {
+		favorites, err := destService.GetFavoriteDestinations()
+		if err != nil {
+			sendJSON(w, http.StatusInternalServerError, model.Response{
+				Status:  "error",
+				Message: err.Error(),
+				Time:    time.Now(),
+			})
+			return
+		}
+		sendJSON(w, http.StatusOK, model.Response{
+			Status:  "success",
+			Message: "Favorite destinations retrieved successfully",
+			Data:    favorites,
 			Time:    time.Now(),
 		})
 	})
