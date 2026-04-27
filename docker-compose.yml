@@ -1,0 +1,10 @@
+services:
+  mysumsel-services:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: app.netbird.cloud:8081/be-mysumsel/stable:1.0.0
+    platform: linux/amd64
+    ports:
+      - "8100:8080"
+    restart: unless-stopped
