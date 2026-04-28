@@ -18,12 +18,14 @@ func main() {
 	cityRepo := repository.NewCityRepository()
 	destRepo := repository.NewDestinationRepository()
 	heroRepo := repository.NewHeroRepository()
+	utilRepo := repository.NewUtilityRepository()
 
 	// Initialize Services
 	msgService := service.NewMessageService(msgRepo)
 	cityService := service.NewCityService(cityRepo)
 	destService := service.NewDestinationService(destRepo)
 	heroService := service.NewHeroService(heroRepo)
+	utilService := service.NewUtilityService(utilRepo)
 
 	// Initialize Router
 	mux := http.NewServeMux()
@@ -123,6 +125,45 @@ func main() {
 			Data:    heroes,
 			Time:    time.Now(),
 		})
+	})
+
+	// Utilities Endpoint
+	mux.HandleFunc("GET /api/v1/utilities", func(w http.ResponseWriter, r *http.Request) {
+		latStr := r.Header.Get("X-Latitude")
+		lonStr := r.Header.Get("X-Longitude")
+
+		var lat, lon float64
+		if latStr != "" {
+			lat, _ = strconv.ParseFloat(latStr, 64)
+		}
+		if lonStr != "" {
+			lon, _ = strconv.ParseFloat(lonStr, 64)
+		}
+
+		utils, err := utilService.GetUtilities(lat, lon)
+		if err != nil {
+			sendJSON(w, http.StatusInternalServerError, model.Response{
+				Status:  "error",
+				Message: err.Error(),
+				Time:    time.Now(),
+			})
+			return
+		}
+
+		// Custom response structure for utilities as requested
+		response := struct {
+			Status    string                 `json:"status"`
+			RequestID string                 `json:"request_id"`
+			Data      *model.UtilityResponse `json:"data"`
+		}{
+			Status:    "success",
+			RequestID: "util-sumsel-2026-001",
+			Data:      utils,
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(response)
 	})
 
 	// Start Server

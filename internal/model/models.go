@@ -57,3 +57,43 @@ type Hero struct {
 	ID       string `json:"id"`
 	ImageURL string `json:"image_url"`
 }
+
+// Utility models
+type UtilityContact struct {
+	Phone     string `json:"phone,omitempty"`
+	Emergency string `json:"emergency,omitempty"`
+}
+
+type UtilityLocation struct {
+	Address    string  `json:"address"`
+	Latitude   float64 `json:"latitude"`
+	Longitude  float64 `json:"longitude"`
+	DistanceKM float64 `json:"distance_km"`
+}
+
+type UtilityMetadata struct {
+	OperatingHours string `json:"operating_hours,omitempty"`
+	AuthorizedID   string `json:"authorized_id,omitempty"`
+}
+
+type UtilityItem struct {
+	ID        string           `json:"id"`
+	Category  string           `json:"category"`
+	Name      string           `json:"name"`
+	City      string           `json:"city"`
+	IsOpen24h bool             `json:"is_open_24h"`
+	ImageURL  string           `json:"image_url"`
+	Contact   UtilityContact   `json:"contact"`
+	Location  UtilityLocation  `json:"location"`
+	Tags      []string         `json:"tags,omitempty"`
+	Metadata  *UtilityMetadata `json:"metadata,omitempty"`
+}
+
+type UtilityResponse struct {
+	Items []UtilityItem `json:"items"`
+	Meta  struct {
+		TotalResults int       `json:"total_results"`
+		NearestCity  string    `json:"nearest_city"`
+		ServerTime   time.Time `json:"server_time"`
+	} `json:"meta"`
+}
