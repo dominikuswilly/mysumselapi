@@ -17,11 +17,13 @@ func main() {
 	msgRepo := repository.NewMessageRepository()
 	cityRepo := repository.NewCityRepository()
 	destRepo := repository.NewDestinationRepository()
+	heroRepo := repository.NewHeroRepository()
 
 	// Initialize Services
 	msgService := service.NewMessageService(msgRepo)
 	cityService := service.NewCityService(cityRepo)
 	destService := service.NewDestinationService(destRepo)
+	heroService := service.NewHeroService(heroRepo)
 
 	// Initialize Router
 	mux := http.NewServeMux()
@@ -100,6 +102,25 @@ func main() {
 			Status:  "success",
 			Message: "Favorite destinations retrieved successfully",
 			Data:    favorites,
+			Time:    time.Now(),
+		})
+	})
+
+	// Heroes Endpoint
+	mux.HandleFunc("GET /api/v1/heroes", func(w http.ResponseWriter, r *http.Request) {
+		heroes, err := heroService.GetHeroes()
+		if err != nil {
+			sendJSON(w, http.StatusInternalServerError, model.Response{
+				Status:  "error",
+				Message: err.Error(),
+				Time:    time.Now(),
+			})
+			return
+		}
+		sendJSON(w, http.StatusOK, model.Response{
+			Status:  "success",
+			Message: "Heroes retrieved successfully",
+			Data:    heroes,
 			Time:    time.Now(),
 		})
 	})

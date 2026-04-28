@@ -51,3 +51,9 @@ type Destination struct {
 	Categories []Category `json:"categories"`
 	ImageURL   string     `json:"image_url"`
 }
+
+// Hero represents a hero banner item
+type Hero struct {
+	ID       string `json:"id"`
+	ImageURL string `json:"image_url"`
+}
