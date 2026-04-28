@@ -18,10 +18,11 @@ type Message struct {
 
 // City represents a city or regency in South Sumatra
 type City struct {
-	ID      int     `json:"id"`
-	Name    string  `json:"name"`
-	Type    string  `json:"type"`
-	Capital *string `json:"capital"`
+	ID       int     `json:"id"`
+	Name     string  `json:"name"`
+	Type     string  `json:"type"`
+	Capital  *string `json:"capital"`
+	ImageURL string  `json:"image_url"`
 }
 
 // CityResponse represents the specific response structure for cities
