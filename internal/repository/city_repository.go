@@ -5,7 +5,7 @@ import (
 )
 
 type CityRepository interface {
-	GetAllCities() (*model.CityResponse, error)
+	GetAllCities(page, limit int) (*model.CityResponse, error)
 }
 
 type cityRepository struct{}
@@ -14,10 +14,10 @@ func NewCityRepository() CityRepository {
 	return &cityRepository{}
 }
 
-func (r *cityRepository) GetAllCities() (*model.CityResponse, error) {
+func (r *cityRepository) GetAllCities(page, limit int) (*model.CityResponse, error) {
 	strPtr := func(s string) *string { return &s }
 
-	cities := []model.City{
+	allCities := []model.City{
 		{ID: 1, Name: "Kota Palembang", Type: "kota", Capital: nil, ImageURL: "https://res.cloudinary.com/dgixft7w5/image/upload/v1777196536/ampera_uobaou.webp"},
 		{ID: 2, Name: "Kota Lubuklinggau", Type: "kota", Capital: nil, ImageURL: "https://res.cloudinary.com/dgixft7w5/image/upload/v1777196537/bukitserelo_hcsyjs.webp"},
 		{ID: 3, Name: "Kota Pagar Alam", Type: "kota", Capital: nil, ImageURL: "https://res.cloudinary.com/dgixft7w5/image/upload/v1777196537/gunungdempo_kg4mpt.webp"},
@@ -37,11 +37,26 @@ func (r *cityRepository) GetAllCities() (*model.CityResponse, error) {
 		{ID: 17, Name: "Kabupaten Ogan Ilir", Type: "kabupaten", Capital: strPtr("Indralaya"), ImageURL: "https://res.cloudinary.com/dgixft7w5/image/upload/v1777196537/alquranakbar_ogwz8i.webp"},
 	}
 
-	resp := &model.CityResponse{
-		Data: cities,
+	total := len(allCities)
+	offset := (page - 1) * limit
+	if offset > total {
+		offset = total
 	}
-	resp.Meta.Total = len(cities)
+
+	end := offset + limit
+	if end > total {
+		end = total
+	}
+
+	paginatedCities := allCities[offset:end]
+
+	resp := &model.CityResponse{
+		Data: paginatedCities,
+	}
+	resp.Meta.Total = total
 	resp.Meta.Provinsi = "Sumatera Selatan"
+	resp.Meta.Page = page
+	resp.Meta.Limit = limit
 
 	return resp, nil
 }

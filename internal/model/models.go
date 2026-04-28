@@ -30,6 +30,8 @@ type CityResponse struct {
 	Meta struct {
 		Total    int    `json:"total"`
 		Provinsi string `json:"provinsi"`
+		Page     int    `json:"page"`
+		Limit    int    `json:"limit"`
 	} `json:"meta"`
 	Data []City `json:"data"`
 }

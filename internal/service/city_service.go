@@ -6,7 +6,7 @@ import (
 )
 
 type CityService interface {
-	GetAllCities() (*model.CityResponse, error)
+	GetAllCities(page, limit int) (*model.CityResponse, error)
 }
 
 type cityService struct {
@@ -17,6 +17,6 @@ func NewCityService(repo repository.CityRepository) CityService {
 	return &cityService{repo: repo}
 }
 
-func (s *cityService) GetAllCities() (*model.CityResponse, error) {
-	return s.repo.GetAllCities()
+func (s *cityService) GetAllCities(page, limit int) (*model.CityResponse, error) {
+	return s.repo.GetAllCities(page, limit)
 }

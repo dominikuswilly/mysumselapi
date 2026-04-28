@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 
 	"mysumselapi/internal/model"
@@ -55,7 +56,19 @@ func main() {
 
 	// Cities Endpoint
 	mux.HandleFunc("GET /api/v1/cities", func(w http.ResponseWriter, r *http.Request) {
-		cities, err := cityService.GetAllCities()
+		query := r.URL.Query()
+
+		page, _ := strconv.Atoi(query.Get("page"))
+		if page <= 0 {
+			page = 1
+		}
+
+		limit, _ := strconv.Atoi(query.Get("limit"))
+		if limit <= 0 {
+			limit = 5
+		}
+
+		cities, err := cityService.GetAllCities(page, limit)
 		if err != nil {
 			sendJSON(w, http.StatusInternalServerError, model.Response{
 				Status:  "error",
