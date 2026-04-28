@@ -132,13 +132,18 @@ func main() {
 		latStr := r.Header.Get("X-Latitude")
 		lonStr := r.Header.Get("X-Longitude")
 
+		if latStr == "" || lonStr == "" {
+			sendJSON(w, http.StatusBadRequest, model.Response{
+				Status:  "error",
+				Message: "X-Latitude and X-Longitude headers are required",
+				Time:    time.Now(),
+			})
+			return
+		}
+
 		var lat, lon float64
-		if latStr != "" {
-			lat, _ = strconv.ParseFloat(latStr, 64)
-		}
-		if lonStr != "" {
-			lon, _ = strconv.ParseFloat(lonStr, 64)
-		}
+		lat, _ = strconv.ParseFloat(latStr, 64)
+		lon, _ = strconv.ParseFloat(lonStr, 64)
 
 		utils, err := utilService.GetUtilities(lat, lon)
 		if err != nil {
